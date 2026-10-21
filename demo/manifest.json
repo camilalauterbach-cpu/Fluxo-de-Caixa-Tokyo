@@ -66,8 +66,8 @@
   },
   {
     "path": "server/app.py",
-    "bytes": 27130,
-    "sha256": "fda258e95a336536eeeca93f2cef5a4a9393bf23eca24fee85f16f886e09b2bc"
+    "bytes": 28914,
+    "sha256": "969964f3e7563a9397b2836247cab72503364635e63288177550414b865e154f"
   },
   {
     "path": "server/costs.py",
@@ -78,6 +78,11 @@
     "path": "server/engine.py",
     "bytes": 20647,
     "sha256": "f4e326e22e2232151842d1b5f5ea039b6e99144f34def30cf7894a77f4b795b1"
+  },
+  {
+    "path": "server/hosting.py",
+    "bytes": 6700,
+    "sha256": "5d4e166b5d8cdbd47371f97f7c1bb7032e6887ac8fc7fbad68253a9d1fbb1380"
   },
   {
     "path": "server/identity.py",
@@ -91,8 +96,8 @@
   },
   {
     "path": "server/store.py",
-    "bytes": 16547,
-    "sha256": "ee1cf0e24df4cd72d4fa7735ba30cc397a22a71c9808e6c8b3d2ca28d88af9a5"
+    "bytes": 16610,
+    "sha256": "5eb2352f3dbaed0afe37161e7f62d6ea39056aa7f005467e5e803bced8b89ea0"
   },
   {
     "path": "server/workflow.py",
@@ -108,6 +113,11 @@
     "path": "tests/test_creditor_contacts.py",
     "bytes": 11236,
     "sha256": "296e623e95486e78b61e7b569a97cfb65ed1c39e535eea38b848a837a0a675f6"
+  },
+  {
+    "path": "tests/test_hosting.py",
+    "bytes": 15048,
+    "sha256": "e4a935fb0131e9d69dbbc031ef077973bab5c0f9d6228fc2881d1d68e49ae93b"
   },
   {
     "path": "tests/test_receipt_banks.py",

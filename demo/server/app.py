@@ -14,6 +14,7 @@ from costs import paid_components
 from workflow import assess,approve,confirm_negotiation
 from identity import instance_id,build_id
 from planning import apply_title,impact,periods,report,report_document,move_event
+from hosting import HostingError,load_config,validate_production_database
 ROOT=Path(__file__).resolve().parents[1]
 BUILD_ID=build_id(ROOT)
 
@@ -33,6 +34,9 @@ class Handler(BaseHTTPRequestHandler):
         try:c.load(self.headers.get('Cookie',''))
         except Exception:return ''
         return c['tokyo_session'].value if 'tokyo_session' in c else ''
+    def session_cookie(self,token='',logout=False):
+        value=f'tokyo_session={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age={0 if logout else 43200}'
+        return value+('; Secure' if getattr(self.server,'production',False) else '')
     def user(self):
         u=self.store.auth(self.cookie())
         if not u:raise Unauthorized('Entre para acessar o planejamento.')
@@ -45,17 +49,19 @@ class Handler(BaseHTTPRequestHandler):
         if cookie:self.send_header('Set-Cookie',cookie)
         self.end_headers();self.wfile.write(raw)
     def guard(self):
-        host=self.headers.get('Host','')
-        if host not in self.server.allowed_hosts:raise Forbidden('Endereço de acesso não autorizado.')
+        host=self.headers.get('Host','').lower()
+        if len(self.headers.get_all('Host',[]))!=1 or host not in self.server.allowed_hosts:raise Forbidden('Endereço de acesso não autorizado.')
         if self.command=='POST':
             if self.headers.get('X-Tokyo-Request')!='1' or not self.headers.get('Content-Type','').startswith('application/json'):raise Forbidden('Origem da requisição não autorizada.')
             origin=self.headers.get('Origin')
-            if origin and origin not in ['http://'+h for h in self.server.allowed_hosts]:raise Forbidden('Origem da requisição não autorizada.')
+            allowed=getattr(self.server,'allowed_origins',{'http://'+h for h in self.server.allowed_hosts})
+            if len(self.headers.get_all('Origin',[]))>1 or origin and origin not in allowed:raise Forbidden('Origem da requisição não autorizada.')
     def do_GET(self):self.route('GET')
     def do_POST(self):self.route('POST')
     def route(self,method):
         try:
             self.guard();parsed=urlparse(self.path);path=parsed.path;q={k:v[0] for k,v in parse_qs(parsed.query).items()};data={}
+            if path=='/api/setup' and getattr(self.server,'production',False):raise Forbidden('O primeiro acesso é preparado fora da interface pública.')
             if method=='POST':
                 size=int(self.headers.get('Content-Length',0))
                 if size<1 or size>1024*1024:raise DomainError('Requisição fora do tamanho permitido.')
@@ -71,14 +77,14 @@ class Handler(BaseHTTPRequestHandler):
                     if self.client_address[0] not in ['127.0.0.1','::1']:raise Forbidden('Crie o primeiro acesso no computador do servidor.')
                     user=self.store.setup(text(data.get('name')),text(data.get('email')),data.get('password',''))
                 else:user=self.store.login(text(data.get('email')),data.get('password',''))
-                token=self.store.session(user);attempts.clear();return self.send(dict(user=user),cookie=f'tokyo_session={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200')
+                token=self.store.session(user);attempts.clear();return self.send(dict(user=user),cookie=self.session_cookie(token))
             if not path.startswith('/api/'):
                 if method!='GET':raise DomainError('Rota inválida.')
                 rel='index.html' if path=='/' else path.lstrip('/');target=(ROOT/'dist'/rel).resolve();dist=(ROOT/'dist').resolve()
                 if dist not in target.parents or not target.is_file():return self.send('Arquivo não encontrado.',404,'text/plain; charset=utf-8')
                 return self.send(target.read_bytes(),kind=(mimetypes.guess_type(target.name)[0] or 'application/octet-stream')+('; charset=utf-8' if target.suffix in ['.js','.css','.html'] else ''))
             user=self.user()
-            if path=='/api/logout':self.store.logout(self.cookie());return self.send(dict(ok=True),cookie='tokyo_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0')
+            if path=='/api/logout':self.store.logout(self.cookie());return self.send(dict(ok=True),cookie=self.session_cookie(logout=True))
             if method=='GET':
                 if path=='/api/scenarios':return self.send(self.store.scenarios())
                 if path=='/api/users':self.role(user,'admin');return self.send(self.store.users())
@@ -261,8 +267,30 @@ class Handler(BaseHTTPRequestHandler):
         doc='<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Proposta Tokyo</title><style>body{font:16px Arial;color:#182524;max-width:780px;margin:48px auto;padding:24px}h1{font-size:26px}table{width:100%;border-collapse:collapse;margin:24px 0}td,th{padding:14px;text-align:left;border-bottom:1px solid #ddd}p{line-height:1.6}@media print{body{margin:0}}</style><h1>Tokyo — proposta de pagamento</h1><h2>'+esc(c['name'])+'</h2><p>'+esc(status)+'</p><p>Total da proposta: <strong>'+brl(sum(e['amount_cents'] for e in rows))+'</strong>. '+str(len(rows))+' pagamentos totais, incluindo a entrada.</p>'+cost_line+'<table><thead><tr><th>Pagamento</th><th>Data</th><th>Valor</th></tr></thead><tbody>'+body+'</tbody></table><p>'+esc(p.get('notes',''))+'</p><p>Condições sujeitas à confirmação das partes. Este documento não executa pagamentos nem comprova quitação.</p></html>'
         return self.send(doc,kind='text/html; charset=utf-8')
 
-def serve(port=8844,db=None):
-    server=ThreadingHTTPServer(('127.0.0.1',port),Handler);server.store=Store(ROOT,db);server.allowed_hosts={f'127.0.0.1:{port}',f'localhost:{port}'};server.attempts={}
-    print(f'Tokyo disponível em http://127.0.0.1:{port}',flush=True);server.serve_forever()
-if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--port',type=int,default=8844);p.add_argument('--db');args=p.parse_args();serve(args.port,args.db)
+def create_server(port=None,db=None,*,config=None,host=None,public_url=None,production=None):
+    settings=config if config is not None else load_config(port=port,db=db,host=host,public_url=public_url,production=production)
+    if settings.production:validate_production_database(settings.db_path)
+    server=ThreadingHTTPServer((settings.host,settings.port),Handler)
+    try:
+        server.store=Store(ROOT,settings.db_path);server.production=settings.production
+        actual_port=server.server_address[1];server.allowed_hosts=settings.allowed_hosts(actual_port)
+        server.allowed_origins=settings.allowed_origins(actual_port);server.attempts={};server.hosting_config=settings
+        return server
+    except BaseException:
+        server.server_close();raise
+
+def serve(port=None,db=None,*,config=None,host=None,public_url=None,production=None):
+    server=create_server(port,db,config=config,host=host,public_url=public_url,production=production)
+    address=server.hosting_config.public_origin or f'http://{server.hosting_config.host}:{server.server_address[1]}'
+    print(f'Tokyo disponível em {address}',flush=True)
+    try:server.serve_forever()
+    finally:server.server_close()
+
+def main(argv=None):
+    p=argparse.ArgumentParser();p.add_argument('--port',type=int);p.add_argument('--db');p.add_argument('--host');p.add_argument('--public-url')
+    p.add_argument('--production',action='store_const',const=True,default=None)
+    args=p.parse_args(argv)
+    try:serve(args.port,args.db,host=args.host,public_url=args.public_url,production=args.production)
+    except HostingError as error:p.error(str(error))
+
+if __name__=='__main__':main()

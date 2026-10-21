@@ -19,7 +19,7 @@ def password_matches(password,saved):
     except (ValueError,DomainError):return False
 
 class Store:
-    def __init__(self,root,db_path=None):
+    def __init__(self,root,db_path=None,initial_state=None):
         self.root=Path(root);self.path=Path(db_path or self.root/'private'/'tokyo.sqlite3');self.path.parent.mkdir(parents=True,exist_ok=True)
         with self.connect() as db:
             db.executescript('''PRAGMA journal_mode=WAL;
@@ -33,7 +33,7 @@ class Store:
             CREATE INDEX IF NOT EXISTS requests_scenario ON requests(scenario_id,status);
             ''')
             if not db.execute('SELECT id FROM scenarios LIMIT 1').fetchone():
-                s=seed(self.root);db.execute('INSERT INTO scenarios VALUES(?,?,?,?,?)',('base',s['name'],1,json.dumps(s,ensure_ascii=False),stamp()))
+                s=seed(self.root) if initial_state is None else initial_state;db.execute('INSERT INTO scenarios VALUES(?,?,?,?,?)',('base',s['name'],1,json.dumps(s,ensure_ascii=False),stamp()))
     @contextlib.contextmanager
     def connect(self):
         db=sqlite3.connect(self.path,timeout=15);db.row_factory=sqlite3.Row;db.execute('PRAGMA busy_timeout=15000')

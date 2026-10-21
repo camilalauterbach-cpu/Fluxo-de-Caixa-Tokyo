@@ -1,0 +1,49 @@
+name: Hosting checks
+
+on:
+  push:
+    branches: [main, codex/tokyo-hosting]
+    paths:
+      - demo/**
+      - deploy/**
+      - tools/working/desbloquear_tokyo.py
+      - tools/tests/test_cloud_data.py
+      - tools/tests/cloud_container_check.py
+      - downloads/Fluxo-de-Caixa-Tokyo-Trabalho.zip
+      - Dockerfile
+      - .dockerignore
+      - render.yaml
+      - .github/workflows/hosting.yml
+  pull_request:
+    paths:
+      - demo/**
+      - deploy/**
+      - tools/**
+      - Dockerfile
+      - .dockerignore
+      - render.yaml
+      - .github/workflows/hosting.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hosting:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned encryption dependency
+        run: python -m pip install -r deploy/requirements.txt
+      - name: Verify protected initialization, persistence and backups with synthetic data
+        run: python -m unittest discover -s tools/tests -p test_cloud_data.py -v
+      - name: Verify production HTTP and existing application behavior
+        run: python -m unittest discover -s demo/tests -p 'test_*.py' -v
+      - name: Build production container without financial secrets
+        run: docker build -t tokyo-hosting:ci .
+      - name: Verify first boot and replacement container with a persistent volume
+        run: python tools/tests/cloud_container_check.py --image tokyo-hosting:ci

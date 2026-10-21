@@ -1,0 +1,35 @@
+services:
+  tokyo:
+    build: .
+    restart: unless-stopped
+    init: true
+    env_file: .env
+    environment:
+      TOKYO_PRODUCTION: "1"
+      TOKYO_HOST: 0.0.0.0
+      TOKYO_DB_PATH: /var/data/private/tokyo.sqlite3
+      PORT: "10000"
+    volumes:
+      - tokyo-data:/var/data
+    expose:
+      - "10000"
+    networks:
+      - tokyo-private
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    depends_on:
+      tokyo:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./tls:/etc/nginx/tls:ro
+    networks:
+      - tokyo-private
+networks:
+  tokyo-private:
+volumes:
+  tokyo-data:

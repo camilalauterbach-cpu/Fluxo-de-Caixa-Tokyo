@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: tokyo
+    runtime: docker
+    plan: starter
+    numInstances: 1
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: tokyo-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: TOKYO_PRODUCTION
+        value: "1"
+      - key: TOKYO_HOST
+        value: 0.0.0.0
+      - key: TOKYO_DB_PATH
+        value: /var/data/private/tokyo.sqlite3
+      - key: TOKYO_ADMIN_EMAIL
+        sync: false
+      - key: TOKYO_ADMIN_PASSWORD
+        sync: false
+      - key: TOKYO_DATA_KEY
+        sync: false
+      - key: TOKYO_BACKUP_KEY
+        generateValue: true
