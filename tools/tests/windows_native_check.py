@@ -107,12 +107,14 @@ def main():
         return
     assert sys.flags.isolated, 'Run the bundled Python with -I'
     checks = []
+    print('::notice title=Windows native stage::native_crypto', flush=True)
     AESGCM, _ = helper.crypto_primitives()
     key, nonce, fixture = os.urandom(32), os.urandom(12), b'public synthetic native fixture'
     encoded = base64.urlsafe_b64encode(key).decode().rstrip('=')
     payload = helper.MAGIC + nonce + AESGCM(key).encrypt(nonce, fixture, helper.AAD)
     assert helper.decrypt(payload, encoded) == fixture, 'Native cryptography round-trip failed'
     checks.append('bundled_native_crypto')
+    print('::notice title=Windows native stage::port_guards', flush=True)
     with socket.socket() as probe:
         probe.bind(('127.0.0.1', 0))
         port = probe.getsockname()[1]
@@ -127,6 +129,7 @@ def main():
         else:
             raise AssertionError('Occupied port was accepted')
     checks.append('occupied_port_rejected')
+    print('::notice title=Windows native stage::powershell_parser', flush=True)
     script = base64.b64encode(helper.WINDOWS_KEY_DIALOG.encode()).decode()
     parse = "$t=$null;$e=$null;[void][System.Management.Automation.Language.Parser]::ParseInput([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" + script + "')),[ref]$t,[ref]$e);if($e.Count){exit 1}"
     command = base64.b64encode(parse.encode('utf-16le')).decode()
@@ -134,7 +137,9 @@ def main():
                             capture_output=True, timeout=10)
     assert parsed.returncode == 0, 'Native PowerShell parser rejected the dialog'
     checks.append('native_powershell_syntax')
+    print('::notice title=Windows native stage::real_key_dialog', flush=True)
     gui = check_gui(args.root)
+    print('::notice title=Windows native stage::persistent_console', flush=True)
     check_console(args.root)
     checks.append('persistent_cmd_missing_runtime')
     print(json.dumps({'passed': checks, 'key_dialog': gui, 'real_payload_decrypted': False,
@@ -142,4 +147,11 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as error:
+        details = type(error).__name__ + ': ' + str(error)
+        if error.__cause__ is not None:
+            details += '; cause=' + type(error.__cause__).__name__ + ': ' + str(error.__cause__)
+        print('::error title=Windows native startup::' + details.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A'), flush=True)
+        raise

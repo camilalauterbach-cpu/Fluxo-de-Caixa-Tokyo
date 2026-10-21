@@ -30,5 +30,16 @@ jobs:
           if ($roots.Count -ne 1) { throw 'Expected exactly one package root.' }
           $root = $roots[0].FullName
           $python = Join-Path $root 'python\python.exe'
-          & $python -I -B 'tools/tests/windows_native_check.py' --root $root
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $nativeOutput = @()
+          $nativeExit = 1
+          try {
+            $ErrorActionPreference = 'Continue'
+            $nativeOutput = @(& $python -I -B 'tools/tests/windows_native_check.py' --root $root 2>&1)
+            $nativeExit = $LASTEXITCODE
+          } finally {
+            $ErrorActionPreference = 'Stop'
+            $text = ($nativeOutput | ForEach-Object { $_.ToString() }) -join "`n"
+            Write-Output $text
+            @('## Native Windows startup', '', '```text', $text, '```', '', "Exit code: $nativeExit") | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+          }
+          if ($nativeExit -ne 0) { exit $nativeExit }
