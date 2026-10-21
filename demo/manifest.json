@@ -30,19 +30,24 @@
     "sha256": "9ead631097631550b06e242c706fe0a3f1c852892b27c9cf66406f3bae890c84"
   },
   {
-    "path": "dist/assets/index-DuCYP0XY.css",
-    "bytes": 45844,
-    "sha256": "01808842e86515f1874589845c8d8952faca2d167262a512de733074aa5c2c2d"
+    "path": "dist/assets/index-BxUAKgiw.css",
+    "bytes": 49003,
+    "sha256": "22c8a772d89a4828cc9157d8ea073f1d69055249cc6536dc0496784db00f9203"
   },
   {
-    "path": "dist/assets/index-IJQMaIbd.js",
-    "bytes": 370945,
-    "sha256": "8c274e1797bc384c7c6e091675ee4602bb7de07d6938bf2f001e4775853f409b"
+    "path": "dist/assets/index-dGPtQA6e.js",
+    "bytes": 371242,
+    "sha256": "419cc9138de0a5f922b49cd15fb9130925bb41303d06028487794daa08c9438a"
+  },
+  {
+    "path": "dist/assets/tokyo-eventos-g-co5Pl1.png",
+    "bytes": 11641,
+    "sha256": "17bc45f367caaae3a75cda686f8012e6f5add89845b308daec8be9fd805ef096"
   },
   {
     "path": "dist/index.html",
-    "bytes": 450,
-    "sha256": "287e43df461825e760c3bbec274d54aa065e5be9527b5b3feafaf98478b2f16a"
+    "bytes": 501,
+    "sha256": "c1814afb668329972a32e0a06c67695678d61bc26396e7623b8e3ef5ad53fc46"
   },
   {
     "path": "package.json",
@@ -131,8 +136,8 @@
   },
   {
     "path": "web/App.jsx",
-    "bytes": 17581,
-    "sha256": "2e0d0907638f28e7abe0b3c8400319a94bba77e34b73ac3ad04ff883106610b1"
+    "bytes": 17595,
+    "sha256": "b7dc2784520d874012aed0a3f04815023cda9e857ff047837b032817a7804a4a"
   },
   {
     "path": "web/Calendar.jsx",
@@ -165,6 +170,11 @@
     "sha256": "42be04e1f32c6886237e974363088f1c65e11a2a40bdf0b97ddf733edd1e2bcb"
   },
   {
+    "path": "web/TokyoBrand.jsx",
+    "bytes": 413,
+    "sha256": "ad4f680e131d56770289039c7dadf76649f7acc867271515b1522719853ad0b7"
+  },
+  {
     "path": "web/Workflow.jsx",
     "bytes": 9913,
     "sha256": "0517c93a40849be3f6953abc52cc046f7ea7bf1be4edc4d650bed98da5d6c21d"
@@ -175,24 +185,34 @@
     "sha256": "fc187dfa8a444003633763281801aea32cde1e6fa4c284761e000cf175722a33"
   },
   {
+    "path": "web/assets/tokyo-eventos.png",
+    "bytes": 11641,
+    "sha256": "17bc45f367caaae3a75cda686f8012e6f5add89845b308daec8be9fd805ef096"
+  },
+  {
+    "path": "web/branding.css",
+    "bytes": 3971,
+    "sha256": "ea76eebef0d3ea7cb5c97abe9bc9dd12f9d20ce6e1450cb862b58a47d66a1aab"
+  },
+  {
     "path": "web/calendarModel.js",
     "bytes": 1615,
     "sha256": "891c7fbf693100edb74239d0ed45e40b0e09426cea2d20404a0575aef26b184e"
   },
   {
     "path": "web/forms.jsx",
-    "bytes": 11846,
-    "sha256": "3169e4815d5601527b4014764b4559d71b71ccf7a80925e524ec11bcb0c31820"
+    "bytes": 11849,
+    "sha256": "2caf6fceb4698df01569973e759d50f207bf311a0f2eee4b78411358d668b968"
   },
   {
     "path": "web/index.html",
-    "bytes": 347,
-    "sha256": "598fb47a2798eb892ac0bcbdecace7d009133aa3f5e0f4f5d9d269a8929d51ca"
+    "bytes": 389,
+    "sha256": "e521644aa8821e9d36b7921feafb32231aea325dc7e558c28600f13188304a50"
   },
   {
     "path": "web/main.jsx",
-    "bytes": 172,
-    "sha256": "cd3a4b1a671bb03ce41500bfa60524719006d2b62725d4bee0cd47ef12fc0d3a"
+    "bytes": 196,
+    "sha256": "bbb693b342e6c8a65822f9498663b835b6d56695aad2610cb370c6160c4eb8a1"
   },
   {
     "path": "web/pages.jsx",
