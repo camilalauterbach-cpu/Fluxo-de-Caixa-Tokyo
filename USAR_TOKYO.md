@@ -2,6 +2,8 @@
 
 [Baixar a versão de trabalho](downloads/Fluxo-de-Caixa-Tokyo-Trabalho.zip). No GitHub, use **Download raw file** (ícone de download).
 
+Se você já baixou o aplicativo e a janela fecha ao colar a chave, use a [correção pequena de abertura](downloads/Tokyo-Correcao-Abertura.zip). Extraia e copie `INICIAR_TOKYO.cmd` e `desbloquear_tokyo.py` para a pasta **Tokyo-Trabalho** que já contém `python/`, substituindo os dois arquivos. Preserve `private/`. A chave continua a mesma.
+
 Esta versão contém a aplicação aprovada, os dados reais enviados e os documentos de referência. Como o repositório está público, os arquivos financeiros ficam protegidos por criptografia dentro do download. A chave de abertura é fornecida na conversa e não acompanha o repositório.
 
 ## Abrir no Windows
@@ -9,10 +11,12 @@ Esta versão contém a aplicação aprovada, os dados reais enviados e os docume
 1. Feche o Tokyo que estiver aberto. Preserve a instalação anterior.
 2. Baixe o ZIP novo e escolha **Extrair Tudo**, em uma pasta nova.
 3. Abra **Tokyo-Trabalho** e dê dois cliques em **INICIAR_TOKYO.cmd**.
-4. Na primeira abertura, cole a chave recebida na conversa. Ela pode não aparecer enquanto você cola; pressione Enter. Nas próximas aberturas, a chave não será solicitada para o mesmo pacote já desbloqueado.
+4. Na primeira abertura, aparecerá a janela **Tokyo — Primeira abertura**. Cole a chave no campo visível e clique em **Abrir Tokyo**. Se essa janela não estiver disponível, o console pedirá a chave com texto visível. Nas próximas aberturas, a chave não será solicitada para o mesmo pacote já desbloqueado.
 5. O navegador abrirá em **http://127.0.0.1:8845**. Crie seu acesso e comece a atualizar os registros.
 
 O Python e os componentes necessários acompanham o pacote. Requer Windows 10/11 de 64 bits. Mantenha a janela do servidor aberta durante o uso; encerre com Ctrl+C.
+
+O console permanece aberto também quando ocorre um erro ou quando a abertura é cancelada. O arquivo `private/inicializacao.log` registra as etapas e os tipos de erro, sem guardar a chave.
 
 ## Dados e ajustes incluídos
 

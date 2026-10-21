@@ -5,7 +5,6 @@ import base64
 import binascii
 from datetime import datetime, timezone
 import errno
-import getpass
 import hashlib
 import io
 import json
@@ -15,6 +14,7 @@ import re
 import shutil
 import socket
 import stat
+import subprocess
 import sys
 import tempfile
 import unicodedata
@@ -36,9 +36,136 @@ ESSENTIAL = {
     "app/data/titulos_snapshot.json", "app/data/pendencias_snapshot.json",
 }
 
+# A static command, with no user input in its arguments. The entered key only
+# travels through the child process's captured stdout and is never logged.
+WINDOWS_KEY_DIALOG = r'''
+$ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+[System.Windows.Forms.Application]::EnableVisualStyles()
+$form = New-Object System.Windows.Forms.Form
+$form.Text = 'Tokyo - Primeira abertura'
+$form.ClientSize = New-Object System.Drawing.Size(640, 200)
+$form.StartPosition = 'CenterScreen'
+$form.FormBorderStyle = 'FixedDialog'
+$form.MaximizeBox = $false
+$form.MinimizeBox = $false
+$label = New-Object System.Windows.Forms.Label
+$label.Location = New-Object System.Drawing.Point(20, 18)
+$label.Size = New-Object System.Drawing.Size(600, 42)
+$label.Text = 'Cole a chave recebida na conversa e clique em Abrir Tokyo. A chave fica visivel para voce conferir.'
+$text = New-Object System.Windows.Forms.TextBox
+$text.Location = New-Object System.Drawing.Point(20, 70)
+$text.Size = New-Object System.Drawing.Size(600, 30)
+$text.Font = New-Object System.Drawing.Font('Consolas', 13)
+$text.MaxLength = 120
+$text.ShortcutsEnabled = $true
+$open = New-Object System.Windows.Forms.Button
+$open.Text = 'Abrir Tokyo'
+$open.Location = New-Object System.Drawing.Point(350, 130)
+$open.Size = New-Object System.Drawing.Size(130, 36)
+$cancel = New-Object System.Windows.Forms.Button
+$cancel.Text = 'Cancelar'
+$cancel.Location = New-Object System.Drawing.Point(490, 130)
+$cancel.Size = New-Object System.Drawing.Size(130, 36)
+$cancel.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+$open.Add_Click({
+    if ($text.Text.Trim() -notmatch '^[A-Za-z0-9_-]{43}=?$') {
+        [void][System.Windows.Forms.MessageBox]::Show($form, 'Copie a chave inteira da conversa. Ela tem 43 caracteres, sem espacos.', 'Confira a chave', [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
+        [void]$text.Focus()
+        return
+    }
+    $form.DialogResult = [System.Windows.Forms.DialogResult]::OK
+})
+$form.Controls.AddRange(@($label, $text, $open, $cancel))
+$form.AcceptButton = $open
+$form.CancelButton = $cancel
+$form.Add_Shown({$form.Activate(); [void]$text.Focus()})
+$result = $form.ShowDialog()
+if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+    $response = @{status = 'ok'; key = $text.Text.Trim()}
+} else {
+    $response = @{status = 'cancelled'}
+}
+$form.Dispose()
+[Console]::Out.WriteLine(($response | ConvertTo-Json -Compress))
+'''
+
 
 class UnlockError(RuntimeError):
     """An error safe to show without revealing payload contents or the key."""
+
+
+class UnlockCancelled(UnlockError):
+    """The user closed the first-start dialog without changing the installation."""
+
+
+def record_event(base, stage, error=None):
+    """Write only fixed stage names and exception classes, never keys or output."""
+    try:
+        private = Path(base) / 'private'
+        if private.is_symlink():
+            return
+        private.mkdir(exist_ok=True)
+        log = private / 'inicializacao.log'
+        if log.is_symlink():
+            return
+        entry = {'utc': datetime.now(timezone.utc).isoformat(), 'stage': stage}
+        if error is not None:
+            entry['error_type'] = type(error).__name__
+            code = getattr(error, 'winerror', None)
+            if isinstance(code, int):
+                entry['winerror'] = code
+            cause = error.__cause__
+            if cause is not None:
+                entry['cause_type'] = type(cause).__name__
+                cause_code = getattr(cause, 'winerror', None)
+                if isinstance(cause_code, int):
+                    entry['cause_winerror'] = cause_code
+        with log.open('a', encoding='utf-8') as stream:
+            stream.write(json.dumps(entry, ensure_ascii=True) + '\n')
+    except OSError:
+        # An unavailable diagnostic file must not hide the original error.
+        pass
+
+
+def ask_key():
+    if sys.platform == 'win32':
+        try:
+            completed = subprocess.run(
+                ['powershell.exe', '-NoLogo', '-NoProfile', '-STA', '-Command', WINDOWS_KEY_DIALOG],
+                stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                encoding='utf-8-sig', errors='strict', check=False,
+                creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0),
+            )
+            if completed.returncode != 0:
+                raise ValueError('Key dialog unavailable')
+            response = json.loads(completed.stdout.strip())
+            if not isinstance(response, dict):
+                raise ValueError('Invalid dialog response')
+            if response.get('status') == 'cancelled':
+                raise UnlockCancelled('Abertura cancelada. Nenhum banco foi alterado.')
+            if response.get('status') != 'ok' or not isinstance(response.get('key'), str):
+                raise ValueError('Invalid dialog response')
+            decode_key(response['key'])
+            return response['key'].strip()
+        except UnlockCancelled:
+            raise
+        except (OSError, ValueError, UnicodeError, UnlockError):
+            # Some Windows policies disable PowerShell/WinForms. Cooked console
+            # input still supports normal paste; unlike getwch it is visible.
+            print('A janela da chave nao abriu. Cole a chave abaixo; ela ficara visivel.', flush=True)
+    return input('Cole a chave recebida na conversa e pressione Enter: ').strip()
+
+
+def crypto_primitives():
+    try:
+        from cryptography.exceptions import InvalidTag
+        from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    except (ImportError, OSError) as error:
+        raise UnlockError('Os componentes de criptografia incluidos nao iniciaram. Extraia novamente o ZIP completo. Consulte private/inicializacao.log.') from error
+    return AESGCM, InvalidTag
 
 
 def require_stopped(port=PORT):
@@ -75,11 +202,7 @@ def decrypt(encrypted, key_text):
         raise UnlockError("O pacote protegido esta incompleto ou possui formato desconhecido.")
     if len(encrypted) > MAX_TOTAL + 32 * 1024 * 1024:
         raise UnlockError("O pacote protegido excede o limite permitido.")
-    try:
-        from cryptography.exceptions import InvalidTag
-        from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-    except ImportError as error:
-        raise UnlockError("Os componentes de criptografia incluidos nao foram encontrados. Extraia novamente o ZIP completo.") from error
+    AESGCM, InvalidTag = crypto_primitives()
     key = decode_key(key_text)
     start = len(MAGIC)
     try:
@@ -226,9 +349,13 @@ def unlock(*, base=BASE, key_text=None, port=PORT):
     if already_installed(base, fingerprint):
         return {"installed": False, "backup": None}
     require_stopped(port)
+    record_event(base, 'verificando_componentes')
+    crypto_primitives()
     if key_text is None:
-        print("Primeira abertura: cole a chave recebida na conversa. A chave nao sera salva.", flush=True)
-        key_text = getpass.getpass("Chave de acesso ao pacote: ")
+        record_event(base, 'solicitando_chave')
+        print('Primeira abertura: cole a chave na janela Tokyo. A chave nao sera salva.', flush=True)
+        key_text = ask_key()
+    record_event(base, 'validando_pacote')
     plaintext = decrypt(encrypted, key_text)
     archive, files = validated_archive(plaintext)
     staging = Path(tempfile.mkdtemp(prefix=".tokyo-instalacao-", dir=base))
@@ -241,6 +368,7 @@ def unlock(*, base=BASE, key_text=None, port=PORT):
                     shutil.copyfileobj(source, destination, length=1024 * 1024)
         require_stopped(port)
         backup = install(staging, base, fingerprint)
+        record_event(base, 'instalacao_concluida')
         return {"installed": True, "backup": backup}
     except UnlockError:
         raise
@@ -251,20 +379,27 @@ def unlock(*, base=BASE, key_text=None, port=PORT):
 
 
 def main():
-    result = unlock()
-    if result["installed"]:
-        print("Tokyo preparado neste computador. Chave nao salva; banco local preservado.", flush=True)
-        if result["backup"]:
-            print("Fontes anteriores guardadas em: " + str(result["backup"]), flush=True)
-    return 0
+    record_event(BASE, 'inicio')
+    try:
+        result = unlock()
+        if result['installed']:
+            print('Tokyo preparado neste computador. Banco local preservado.', flush=True)
+            if result['backup']:
+                print('Fontes anteriores guardadas em: ' + str(result['backup']), flush=True)
+        else:
+            record_event(BASE, 'ja_preparado')
+        return 0
+    except (UnlockCancelled, KeyboardInterrupt) as error:
+        record_event(BASE, 'cancelado', error)
+        print('Abertura cancelada. Nenhum banco foi alterado.', flush=True)
+        return 2
+    except Exception as error:
+        record_event(BASE, 'falha', error)
+        detail = str(error) if isinstance(error, UnlockError) else 'Falha inesperada (' + type(error).__name__ + ').'
+        print('Nao foi possivel preparar o Tokyo: ' + detail, flush=True)
+        print('A janela continuara aberta. Diagnostico: private/inicializacao.log', flush=True)
+        return 1
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except (UnlockError, OSError, EOFError) as error:
-        print("Nao foi possivel preparar o Tokyo: " + str(error), flush=True)
-        raise SystemExit(1)
-    except KeyboardInterrupt:
-        print("\nOperacao cancelada. Nenhuma chave foi salva.", flush=True)
-        raise SystemExit(1)
+    raise SystemExit(main())

@@ -94,7 +94,7 @@ class UnlockTests(unittest.TestCase):
         before = {path.relative_to(self.base): path.read_bytes() for path in self.base.rglob("*") if path.is_file()}
         with socket.socket() as server:
             server.bind(("127.0.0.1", 0));server.listen()
-            with patch.object(unlocker.getpass, "getpass", side_effect=AssertionError("must not ask again")):
+            with patch.object(unlocker, "ask_key", side_effect=AssertionError("must not ask again")):
                 result = unlocker.unlock(base=self.base, port=server.getsockname()[1])
         self.assertFalse(result["installed"])
         self.assertEqual(before, {path.relative_to(self.base): path.read_bytes() for path in self.base.rglob("*") if path.is_file()})
@@ -132,7 +132,7 @@ class UnlockTests(unittest.TestCase):
         self.package()
         with socket.socket() as server:
             server.bind(("127.0.0.1", 0));server.listen()
-            with patch.object(unlocker.getpass, "getpass", side_effect=AssertionError("must check port first")):
+            with patch.object(unlocker, "ask_key", side_effect=AssertionError("must check port first")):
                 with self.assertRaises(unlocker.UnlockError):
                     unlocker.unlock(base=self.base, port=server.getsockname()[1])
             with socket.create_connection(server.getsockname(), timeout=1):
@@ -221,7 +221,7 @@ class UnlockTests(unittest.TestCase):
         self.assertTrue(failed)
         self.assert_private(private)
         for name, data in before.items():
-            if name != Path(unlocker.PAYLOAD_NAME):
+            if name not in (Path(unlocker.PAYLOAD_NAME), Path('private/inicializacao.log')):
                 self.assertEqual((self.base / name).read_bytes(), data)
         self.assert_no_staging()
 

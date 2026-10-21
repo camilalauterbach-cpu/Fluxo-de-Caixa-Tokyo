@@ -3,12 +3,18 @@ TOKYO - VERSAO DE TRABALHO PARA WINDOWS
 ABRIR
 1. Clique com o botao direito no ZIP e escolha Extrair Tudo.
 2. Abra a pasta Tokyo-Trabalho e de dois cliques em INICIAR_TOKYO.cmd.
-3. Na primeira abertura, cole a chave recebida na conversa e pressione Enter.
-   A chave nao aparece enquanto voce cola e nao e salva. Guarde-a separadamente
-   para reinstalar ou preparar outro computador. Nao a envie ao GitHub.
+3. Na primeira abertura, uma janela pede a chave recebida na conversa. Cole a
+   chave no campo e clique em Abrir. Se a janela nao puder ser aberta, siga a
+   instrucao no console: a chave aparece enquanto voce cola para poder conferir.
+   Ela nao e salva. Guarde-a separadamente para reinstalar ou preparar outro
+   computador. Nao a envie ao GitHub.
 4. O navegador abre em http://127.0.0.1:8845. Crie seu usuario e sua senha no
    primeiro acesso. A chave do pacote e diferente da senha do seu usuario.
 5. Mantenha a janela aberta. Para fechar, pressione Ctrl+C nessa janela.
+
+A janela de comando agora permanece aberta mesmo se ocorrer um erro ou voce
+cancelar. Leia a mensagem antes de fecha-la pelo X. Se existir, o arquivo
+private\inicializacao.log registra etapas e tipos de erro, sem guardar a chave.
 
 O pacote inclui o Python oficial e os componentes necessarios. Nao exige
 instalar Python, Node ou Lovable. Requer Windows 10/11 de 64 bits e navegador.
