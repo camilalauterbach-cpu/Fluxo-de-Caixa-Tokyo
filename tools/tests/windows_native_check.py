@@ -118,6 +118,22 @@ def main():
     with socket.socket() as probe:
         probe.bind(('127.0.0.1', 0))
         port = probe.getsockname()[1]
+    aliases = {name: getattr(__import__('errno'), name, None) for name in (
+        'ECONNREFUSED', 'EAFNOSUPPORT', 'EADDRNOTAVAIL', 'ENETUNREACH',
+        'WSAECONNREFUSED', 'WSAEAFNOSUPPORT', 'WSAEADDRNOTAVAIL', 'WSAENETUNREACH',
+        'EWOULDBLOCK', 'WSAEWOULDBLOCK', 'ETIMEDOUT', 'WSAETIMEDOUT')}
+    for family, address, label in ((socket.AF_INET, '127.0.0.1', 'IPv4'), (socket.AF_INET6, '::1', 'IPv6')):
+        attempts = []
+        for timeout in (0.5, 2.0):
+            try:
+                with socket.socket(family) as probe:
+                    probe.settimeout(timeout)
+                    started = time.monotonic()
+                    code = probe.connect_ex((address, port))
+                    attempts.append({'timeout': timeout, 'code': code, 'elapsed': round(time.monotonic() - started, 3)})
+            except OSError as error:
+                attempts.append({'timeout': timeout, 'errno': error.errno, 'winerror': getattr(error, 'winerror', None)})
+        print('::notice title=Windows native socket::' + json.dumps({'family': label, 'aliases': aliases, 'attempts': attempts}), flush=True)
     helper.require_stopped(port)
     checks.append('free_port_accepted')
     with socket.socket() as listener:
