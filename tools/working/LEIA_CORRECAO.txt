@@ -1,9 +1,10 @@
 TOKYO - CORRECAO DA ABERTURA NO WINDOWS
 
 1. Feche as janelas do Tokyo que estiverem abertas. Extraia este ZIP.
-2. Copie INICIAR_TOKYO.cmd e desbloquear_tokyo.py para a pasta Tokyo-Trabalho
-   que voce ja extraiu. Essa pasta contem python e pacote-tokyo.enc.
-   Confirme a substituicao desses dois arquivos. Preserve a pasta private.
+2. Copie INICIAR_TOKYO.cmd, desbloquear_tokyo.py e importar_dados.py para a
+   pasta Tokyo-Trabalho que voce ja extraiu. Essa pasta contem python e
+   pacote-tokyo.enc. Confirme a substituicao desses tres arquivos.
+   Preserve a pasta private.
 3. Abra INICIAR_TOKYO.cmd. Se a chave for pedida, cole a MESMA chave recebida
    na conversa no campo da janela e clique em Abrir.
 

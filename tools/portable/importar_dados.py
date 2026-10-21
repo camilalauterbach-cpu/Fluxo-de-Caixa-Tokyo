@@ -31,6 +31,10 @@ class ImportErrorSafe(RuntimeError):
 
 
 def require_stopped(port=PORT):
+    if sys.platform == 'win32':
+        if windows_port_listening(port):
+            raise ImportErrorSafe('A porta do Tokyo esta em uso. Feche o programa com Ctrl+C antes de importar. Nenhum processo foi encerrado.')
+        return
     for family, host in [(socket.AF_INET, "127.0.0.1"), (socket.AF_INET6, "::1")]:
         try:
             probe = socket.socket(family)
@@ -47,6 +51,45 @@ def require_stopped(port=PORT):
                     "A porta da demonstracao esta em uso ou indisponivel. Feche a janela do Tokyo "
                     "com Ctrl+C antes de importar. Nenhum processo foi encerrado."
                 )
+
+
+def windows_port_listening(port):
+    """Read the native listener table instead of timing out on a free port."""
+    import ctypes
+    import struct
+    try:
+        api = ctypes.WinDLL('iphlpapi.dll', use_last_error=True).GetExtendedTcpTable
+        api.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint32),
+                        ctypes.c_int, ctypes.c_uint32, ctypes.c_int, ctypes.c_uint32]
+        api.restype = ctypes.c_uint32
+        for family, row_size, port_offset in ((2, 24, 8), (23, 56, 20)):
+            size = ctypes.c_uint32()
+            code = api(None, ctypes.byref(size), False, family, 3, 0)
+            if code == 50 and family == 23:
+                continue
+            if code not in (0, 122):
+                raise OSError(code, 'TCP listener query failed')
+            for _ in range(5):
+                if not 4 <= size.value <= 8 * 1024 * 1024:
+                    raise ValueError('Invalid TCP listener table size')
+                table = ctypes.create_string_buffer(size.value)
+                code = api(table, ctypes.byref(size), False, family, 3, 0)
+                if code == 122:
+                    continue
+                if code != 0:
+                    raise OSError(code, 'TCP listener query failed')
+                count = struct.unpack_from('<I', table.raw)[0]
+                if 4 + count * row_size > len(table):
+                    raise ValueError('Truncated TCP listener table')
+                for index in range(count):
+                    if struct.unpack_from('!H', table.raw, 4 + index * row_size + port_offset)[0] == port:
+                        return True
+                break
+            else:
+                raise OSError('TCP listener list changed repeatedly')
+        return False
+    except (OSError, ValueError, AttributeError) as error:
+        raise ImportErrorSafe('Nao foi possivel consultar as portas do Windows. Nenhum banco foi alterado.') from error
 
 
 def source_path(source, destination):

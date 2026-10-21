@@ -169,6 +169,10 @@ def crypto_primitives():
 
 
 def require_stopped(port=PORT):
+    if sys.platform == 'win32':
+        if windows_port_listening(port):
+            raise UnlockError('Feche a janela do Tokyo com Ctrl+C antes de instalar esta atualizacao. A porta 8845 esta em uso; nenhum processo foi encerrado.')
+        return
     for family, address in [(socket.AF_INET, "127.0.0.1"), (socket.AF_INET6, "::1")]:
         try:
             probe = socket.socket(family)
@@ -184,6 +188,47 @@ def require_stopped(port=PORT):
             absent = {errno.ECONNREFUSED, errno.EAFNOSUPPORT, errno.EADDRNOTAVAIL, errno.ENETUNREACH}
             if result not in absent:
                 raise UnlockError("Feche a janela do Tokyo com Ctrl+C antes de instalar esta atualizacao. A porta 8845 esta ocupada ou indisponivel; nenhum processo foi encerrado.")
+
+
+def windows_port_listening(port):
+    """Query actual TCP listeners; a timed-out connect is not a listener test."""
+    import ctypes
+    import struct
+    try:
+        api = ctypes.WinDLL('iphlpapi.dll', use_last_error=True).GetExtendedTcpTable
+        api.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint32),
+                        ctypes.c_int, ctypes.c_uint32, ctypes.c_int, ctypes.c_uint32]
+        api.restype = ctypes.c_uint32
+        # MIB_TCPROW_OWNER_PID and MIB_TCP6ROW_OWNER_PID use fixed DWORDs,
+        # independently of pointer size. Both tables start with a DWORD count.
+        for family, row_size, port_offset in ((2, 24, 8), (23, 56, 20)):
+            size = ctypes.c_uint32()
+            code = api(None, ctypes.byref(size), False, family, 3, 0)
+            if code == 50 and family == 23:  # IPv6 is not installed.
+                continue
+            if code not in (0, 122):
+                raise OSError(code, 'TCP listener query failed')
+            for _ in range(5):
+                if not 4 <= size.value <= 8 * 1024 * 1024:
+                    raise ValueError('Invalid TCP listener table size')
+                table = ctypes.create_string_buffer(size.value)
+                code = api(table, ctypes.byref(size), False, family, 3, 0)
+                if code == 122:  # The listener list grew; retry with new size.
+                    continue
+                if code != 0:
+                    raise OSError(code, 'TCP listener query failed')
+                count = struct.unpack_from('<I', table.raw)[0]
+                if 4 + count * row_size > len(table):
+                    raise ValueError('Truncated TCP listener table')
+                for index in range(count):
+                    if struct.unpack_from('!H', table.raw, 4 + index * row_size + port_offset)[0] == port:
+                        return True
+                break
+            else:
+                raise OSError('TCP listener list changed repeatedly')
+        return False
+    except (OSError, ValueError, AttributeError) as error:
+        raise UnlockError('Nao foi possivel consultar as portas do Windows. Consulte private/inicializacao.log.') from error
 
 
 def decode_key(text):

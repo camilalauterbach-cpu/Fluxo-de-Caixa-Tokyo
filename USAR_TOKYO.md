@@ -2,7 +2,7 @@
 
 [Baixar a versão de trabalho](downloads/Fluxo-de-Caixa-Tokyo-Trabalho.zip). No GitHub, use **Download raw file** (ícone de download).
 
-Se você já baixou o aplicativo e a janela fecha ao colar a chave, use a [correção pequena de abertura](downloads/Tokyo-Correcao-Abertura.zip). Extraia e copie `INICIAR_TOKYO.cmd` e `desbloquear_tokyo.py` para a pasta **Tokyo-Trabalho** que já contém `python/`, substituindo os dois arquivos. Preserve `private/`. A chave continua a mesma.
+Se você já baixou o aplicativo e a janela fecha ao colar a chave, use a [correção pequena de abertura](downloads/Tokyo-Correcao-Abertura.zip). Extraia e copie `INICIAR_TOKYO.cmd`, `desbloquear_tokyo.py` e `importar_dados.py` para a pasta **Tokyo-Trabalho** que já contém `python/`, substituindo os três arquivos. Preserve `private/`. A chave continua a mesma.
 
 Esta versão contém a aplicação aprovada, os dados reais enviados e os documentos de referência. Como o repositório está público, os arquivos financeiros ficam protegidos por criptografia dentro do download. A chave de abertura é fornecida na conversa e não acompanha o repositório.
 

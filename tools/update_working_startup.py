@@ -16,14 +16,14 @@ from pathlib import Path
 import tempfile
 import zipfile
 
-from build_portable import REPOSITORY, add_bytes, json_bytes
+from build_portable import HELPERS as PORTABLE, REPOSITORY, add_bytes, json_bytes
 
 HELPERS = REPOSITORY / "tools" / "working"
 ROOT = "Tokyo-Trabalho/"
 PAYLOAD = ROOT + "pacote-tokyo.enc"
 BUILD_INFO = ROOT + "BUILD_INFO.json"
 REPLACED = {ROOT + name for name in (
-    "INICIAR_TOKYO.cmd", "desbloquear_tokyo.py", "LEIA_PRIMEIRO.txt",
+    "INICIAR_TOKYO.cmd", "desbloquear_tokyo.py", "importar_dados.py", "LEIA_PRIMEIRO.txt",
 )} | {BUILD_INFO}
 
 
@@ -34,6 +34,11 @@ def source_helpers(directory: Path) -> dict[str, bytes]:
         if name.endswith(".cmd"):
             data = data.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
         files[ROOT + name] = data
+    importer = (PORTABLE / "importar_dados.py").read_bytes()
+    original = b'DATABASE_NAME = "tokyo-demonstracao.sqlite3"'
+    if importer.count(original) != 1:
+        raise ValueError("The shared importer no longer has the expected database configuration.")
+    files[ROOT + "importar_dados.py"] = importer.replace(original, b'DATABASE_NAME = "tokyo.sqlite3"')
     return files
 
 
@@ -57,6 +62,7 @@ def update(full: Path, patch: Path, helpers: Path = HELPERS) -> dict:
     patch_files = {
         "INICIAR_TOKYO.cmd": replacement[ROOT + "INICIAR_TOKYO.cmd"],
         "desbloquear_tokyo.py": replacement[ROOT + "desbloquear_tokyo.py"],
+        "importar_dados.py": replacement[ROOT + "importar_dados.py"],
         "LEIA_CORRECAO.txt": (helpers / "LEIA_CORRECAO.txt").read_bytes(),
     }
     full_temporary = temporary_zip(full)

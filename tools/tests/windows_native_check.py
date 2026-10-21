@@ -6,8 +6,8 @@ from ctypes import wintypes
 from pathlib import Path
 
 
-def load_helper(root):
-    spec = importlib.util.spec_from_file_location('tokyo_native_unlock', root / 'desbloquear_tokyo.py')
+def load_helper(root, filename='desbloquear_tokyo.py'):
+    spec = importlib.util.spec_from_file_location('tokyo_native_' + filename.split('.')[0], root / filename)
     helper = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(helper)
     return helper
@@ -118,33 +118,20 @@ def main():
     with socket.socket() as probe:
         probe.bind(('127.0.0.1', 0))
         port = probe.getsockname()[1]
-    aliases = {name: getattr(__import__('errno'), name, None) for name in (
-        'ECONNREFUSED', 'EAFNOSUPPORT', 'EADDRNOTAVAIL', 'ENETUNREACH',
-        'WSAECONNREFUSED', 'WSAEAFNOSUPPORT', 'WSAEADDRNOTAVAIL', 'WSAENETUNREACH',
-        'EWOULDBLOCK', 'WSAEWOULDBLOCK', 'ETIMEDOUT', 'WSAETIMEDOUT')}
-    for family, address, label in ((socket.AF_INET, '127.0.0.1', 'IPv4'), (socket.AF_INET6, '::1', 'IPv6')):
-        attempts = []
-        for timeout in (0.5, 2.0):
-            try:
-                with socket.socket(family) as probe:
-                    probe.settimeout(timeout)
-                    started = time.monotonic()
-                    code = probe.connect_ex((address, port))
-                    attempts.append({'timeout': timeout, 'code': code, 'elapsed': round(time.monotonic() - started, 3)})
-            except OSError as error:
-                attempts.append({'timeout': timeout, 'errno': error.errno, 'winerror': getattr(error, 'winerror', None)})
-        print('::notice title=Windows native socket::' + json.dumps({'family': label, 'aliases': aliases, 'attempts': attempts}), flush=True)
-    helper.require_stopped(port)
-    checks.append('free_port_accepted')
-    with socket.socket() as listener:
-        listener.bind(('127.0.0.1', 0)); listener.listen()
-        try:
-            helper.require_stopped(listener.getsockname()[1])
-        except helper.UnlockError:
-            pass
-        else:
-            raise AssertionError('Occupied port was accepted')
-    checks.append('occupied_port_rejected')
+    importer = load_helper(args.root, 'importar_dados.py')
+    for module, rejected, label in ((helper, helper.UnlockError, 'unlock'), (importer, importer.ImportErrorSafe, 'import')):
+        module.require_stopped(port)
+        checks.append(label + '_free_port_accepted')
+        for family, address, protocol in ((socket.AF_INET, '127.0.0.1', 'ipv4'), (socket.AF_INET6, '::1', 'ipv6')):
+            with socket.socket(family) as listener:
+                listener.bind((address, 0)); listener.listen()
+                try:
+                    module.require_stopped(listener.getsockname()[1])
+                except rejected:
+                    pass
+                else:
+                    raise AssertionError(label + ' occupied ' + protocol + ' port was accepted')
+            checks.append(label + '_occupied_' + protocol + '_port_rejected')
     print('::notice title=Windows native stage::powershell_parser', flush=True)
     script = base64.b64encode(helper.WINDOWS_KEY_DIALOG.encode()).decode()
     parse = "$t=$null;$e=$null;[void][System.Management.Automation.Language.Parser]::ParseInput([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" + script + "')),[ref]$t,[ref]$e);if($e.Count){exit 1}"
