@@ -1,0 +1,22 @@
+TOKYO - CORRECAO DA ABERTURA NO WINDOWS
+
+1. Feche as janelas do Tokyo que estiverem abertas. Extraia este ZIP.
+2. Copie INICIAR_TOKYO.cmd, desbloquear_tokyo.py e importar_dados.py para a
+   pasta Tokyo-Trabalho que voce ja extraiu. Essa pasta contem python e
+   pacote-tokyo.enc. Confirme a substituicao desses tres arquivos.
+   Preserve a pasta private.
+3. Abra INICIAR_TOKYO.cmd. Se a chave for pedida, cole a MESMA chave recebida
+   na conversa no campo da janela e clique em Abrir.
+
+O banco, o aplicativo e os anexos existentes permanecem preservados. Se o
+pacote ja foi desbloqueado nesta pasta, a mesma chave nao e pedida novamente.
+A chave do pacote e diferente da senha do seu usuario do aplicativo.
+
+A janela de comando permanece aberta caso haja erro ou cancelamento. Leia a
+mensagem antes de fechar pelo X. Se a janela da chave nao puder ser aberta,
+siga a instrucao no console; nesse caso, a chave aparece durante a colagem.
+Se existir, private\inicializacao.log registra etapas e tipos de erro, sem
+guardar a chave. O arquivo private\servidor.log ajuda em falhas do servidor.
+
+O endereco local e http://127.0.0.1:8845 depois que o servidor iniciar.
+Mantenha a janela de comando aberta durante o uso; encerre com Ctrl+C.

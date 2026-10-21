@@ -1,0 +1,88 @@
+TOKYO - DEMONSTRACAO PARA TESTAR NO WINDOWS
+
+PARA ABRIR PELA PRIMEIRA VEZ
+
+1. Clique com o botao direito no ZIP e escolha "Extrair Tudo".
+2. Abra a pasta extraida Tokyo-Teste.
+3. De dois cliques em INICIAR_TOKYO.cmd.
+4. O navegador abre automaticamente. Crie seu acesso de demonstracao na primeira tela.
+5. Deixe a janela do servidor aberta enquanto testa. Para encerrar, pressione Ctrl+C nela.
+
+REQUISITO: Windows 10 ou 11 de 64 bits (x64). O Python oficial ja acompanha
+este pacote; nao e necessario instalar Node, pnpm ou Python separadamente.
+Se uma politica do computador bloquear executaveis extraidos, nao desative a
+politica: use uma instalacao aprovada de Python 3.12+ e execute
+"py -3 -I -B abrir_tokyo.py" nesta pasta.
+
+COMO ATUALIZAR SEM PERDER SEUS TESTES
+
+1. Na janela do Tokyo de demonstracao, pressione Ctrl+C e aguarde o encerramento.
+2. Com a demonstracao fechada, faca uma copia de seguranca da pasta Tokyo-Teste
+   inteira, incluindo private/. Nao copie um banco enquanto o servidor estiver ativo.
+3. Extraia o ZIP novo em uma pasta temporaria.
+4. Copie TODO O CONTEUDO de Tokyo-Teste dessa extracao para DENTRO da sua pasta
+   Tokyo-Teste atual. Quando o Windows perguntar, substitua os arquivos de mesmo nome.
+   Nao apague a pasta atual antes de copiar e nao remova private/.
+5. Abra novamente INICIAR_TOKYO.cmd na pasta atualizada.
+
+O ZIP nao inclui private/ nem qualquer banco. A copia dos arquivos novos preserva
+private/tokyo-demonstracao.sqlite3, que guarda seu acesso e os testes ja salvos.
+Essa orientacao atualiza somente a demonstracao deste pacote, nao a instalacao
+financeira original do Windows. Se preferir uma demonstracao vazia, extraia o
+ZIP em outra pasta; mantenha a pasta anterior para nao perder seus registros.
+
+IMPORTAR SEUS DADOS ATUAIS SOMENTE NESTE COMPUTADOR (OPCIONAL)
+
+1. Feche a demonstracao com Ctrl+C na janela do servidor e aguarde encerrar.
+2. Abra IMPORTAR_DADOS_REAIS.cmd.
+3. Escolha o banco SQLite ATUAL da instalacao original do Tokyo ou um backup
+   SQLite recente. ZIP, planilha, XML, notas fiscais e executavel nao sao bancos.
+4. Confira o caminho e as contagens mostradas. Se forem os dados certos,
+   digite IMPORTAR quando solicitado. Se o arquivo parecer demonstracao,
+   o auxiliar avisa; confira antes de confirmar.
+5. Abra INICIAR_TOKYO.cmd e entre com o acesso da base original importada.
+6. Confira os recebimentos, pagamentos e alteracoes mais recentes antes de usar.
+
+A importacao faz uma copia integral do banco escolhido, sem mesclar registros.
+A origem e aberta somente para leitura e permanece preservada. Uma base ja
+existente na demonstracao e guardada em private/backups/ antes da substituicao.
+Pare de fazer novos lancamentos na instalacao original durante a copia. Depois
+de importar e conferir os dados, use a versao atualizada para os novos registros;
+nao ha sincronizacao entre as duas bases e usar ambas provoca divergencias.
+Se tiver testes importantes na base atual, mantenha tambem o backup da pasta
+inteira descrito acima. Nao apague a origem nem os backups depois de conferir.
+Esse auxiliar funciona localmente: nao envia seu banco para a nuvem ou GitHub.
+O ZIP continua sem banco financeiro; nenhum dado real foi restaurado aqui.
+
+Se nao souber onde esta o banco atual, pressione Win+R e abra
+%USERPROFILE%\Applications\Tokyo
+Se houver settings.json, abra no Bloco de Notas apenas para consultar db_path.
+Escolha no auxiliar o arquivo SQLite indicado nesse caminho. Nao altere esse
+arquivo de configuracao nem envie seu conteudo ou o banco ao GitHub.
+
+SOBRE ESTA VERSAO
+
+Sem importacao, esta demonstracao usa os dados ficticios incluidos. A porta
+padrao e 8845; a instalacao existente na porta 8844 e seu banco financeiro
+original nao sao alterados. Nao envie private/, bancos ou backups ao GitHub.
+
+O formulario de realizado inclui os bancos Itau e Cora e observacoes
+"Fluxo ja previsto", "Fluxo fora do previsto" e "Livre". Ao escolher "Livre",
+preencha a observacao com suas palavras. Os novos campos fazem parte das
+alteracoes solicitadas nesta demonstracao; os arquivos correspondem ao manifesto
+da versao empacotada, nao ao ZIP original anterior as alteracoes.
+
+O plano do fornecedor permite informar nome fantasia, contato da negociacao e
+telefone, todos opcionais. Na lista de fornecedores, "Exportar fornecedores
+(CSV)" e "Imprimir fornecedores" usam os fornecedores do recorte exibido.
+
+O endereco aberto funciona neste computador. O pacote nao cria hospedagem
+publica, sincronizacao entre computadores, PWA ou aplicativo da loja.
+
+O Python incluido e o pacote Windows x64 oficial da Python Software Foundation
+no NuGet. Seu SHA-512 e tamanho sao verificados antes de empacotar, com TLS
+mantido. Consulte ORIGEM_PYTHON.json, PYTHON_ARQUIVOS_SHA256.json e python/LICENSE.txt.
+
+A execucao nativa do Python Windows incluido nao foi verificada neste ambiente
+Linux. As verificacoes do lancador e da aplicacao usam Python disponivel no
+ambiente de desenvolvimento. BUILD_INFO.json identifica os fontes empacotados.

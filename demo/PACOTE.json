@@ -1,0 +1,11 @@
+{
+  "application": "Tokyo",
+  "version": "1.3.1",
+  "type": "complete_demo_source",
+  "production_database_included": false,
+  "credentials_included": false,
+  "original_documents_included": false,
+  "seed_data": "synthetic",
+  "production_installation_modified": false,
+  "cloud_deployment_configured": false
+}

@@ -1,0 +1,45 @@
+name: Windows startup check
+
+on:
+  push:
+    branches: [codex/tokyo-demo-download]
+    paths:
+      - tools/working/**
+      - tools/tests/**
+      - downloads/Fluxo-de-Caixa-Tokyo-Trabalho.zip
+      - .github/workflows/windows-startup.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  startup:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Extract the protected package and run its bundled Python
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $destination = Join-Path $env:RUNNER_TEMP 'tokyo-startup-native'
+          Expand-Archive -LiteralPath 'downloads/Fluxo-de-Caixa-Tokyo-Trabalho.zip' -DestinationPath $destination
+          $roots = @(Get-ChildItem $destination -Directory | Where-Object { Test-Path (Join-Path $_.FullName 'desbloquear_tokyo.py') })
+          if ($roots.Count -ne 1) { throw 'Expected exactly one package root.' }
+          $root = $roots[0].FullName
+          $python = Join-Path $root 'python\python.exe'
+          $nativeOutput = @()
+          $nativeExit = 1
+          try {
+            $ErrorActionPreference = 'Continue'
+            $nativeOutput = @(& $python -I -B 'tools/tests/windows_native_check.py' --root $root 2>&1)
+            $nativeExit = $LASTEXITCODE
+          } finally {
+            $ErrorActionPreference = 'Stop'
+            $text = ($nativeOutput | ForEach-Object { $_.ToString() }) -join "`n"
+            Write-Output $text
+            @('## Native Windows startup', '', '```text', $text, '```', '', "Exit code: $nativeExit") | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+          }
+          if ($nativeExit -ne 0) { exit $nativeExit }

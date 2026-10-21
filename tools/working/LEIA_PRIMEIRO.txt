@@ -1,0 +1,74 @@
+TOKYO - VERSAO DE TRABALHO PARA WINDOWS
+
+ABRIR
+1. Clique com o botao direito no ZIP e escolha Extrair Tudo.
+2. Abra a pasta Tokyo-Trabalho e de dois cliques em INICIAR_TOKYO.cmd.
+3. Na primeira abertura, uma janela pede a chave recebida na conversa. Cole a
+   chave no campo e clique em Abrir. Se a janela nao puder ser aberta, siga a
+   instrucao no console: a chave aparece enquanto voce cola para poder conferir.
+   Ela nao e salva. Guarde-a separadamente para reinstalar ou preparar outro
+   computador. Nao a envie ao GitHub.
+4. O navegador abre em http://127.0.0.1:8845. Crie seu usuario e sua senha no
+   primeiro acesso. A chave do pacote e diferente da senha do seu usuario.
+5. Mantenha a janela aberta. Para fechar, pressione Ctrl+C nessa janela.
+
+A janela de comando agora permanece aberta mesmo se ocorrer um erro ou voce
+cancelar. Leia a mensagem antes de fecha-la pelo X. Se existir, o arquivo
+private\inicializacao.log registra etapas e tipos de erro, sem guardar a chave.
+
+O pacote inclui o Python oficial e os componentes necessarios. Nao exige
+instalar Python, Node ou Lovable. Requer Windows 10/11 de 64 bits e navegador.
+Execucao nativa no Windows ainda precisa ser conferida no seu computador;
+o servidor, a abertura e a integridade foram validados no ambiente Linux.
+
+DADOS E ARQUIVOS
+Esta versao usa os dados reais enviados na conversa. Na primeira inicializacao
+de uma pasta nova, os snapshots fornecidos inicializam a base local. Eles nao
+sincronizam automaticamente com a instalacao antiga ou com o banco bancario.
+Os anexos originais ficam na pasta referencias depois do desbloqueio; o indice
+ARQUIVOS.json relaciona cada original ao arquivo preservado e ao seu SHA256.
+O backend exige login. Os dados financeiros nao ficam no JavaScript publico.
+
+Se ja existe private\tokyo.sqlite3 nesta pasta, esse banco e preservado. O
+pacote nao inclui um SQLite anterior nem recupera alteracoes que nao foram
+enviadas nos snapshots. Caso voce tenha um banco local mais recente, use a
+importacao opcional abaixo antes de continuar seu trabalho.
+
+As melhorias incluem bancos Itau/Cora nas baixas, observacoes previstas ou
+livres, contatos opcionais de negociacao e exportacao CSV/impressao dos
+fornecedores filtrados. Os campos novos podem ser preenchidos no aplicativo.
+
+ATUALIZAR UMA PASTA TOKYO-TRABALHO EXISTENTE
+Feche o Tokyo com Ctrl+C e guarde uma copia da pasta inteira. Extraia o novo
+ZIP e copie os arquivos sobre a MESMA pasta Tokyo-Trabalho, confirmando a
+substituicao dos arquivos do pacote. Nao apague private. O ZIP nao contem
+essa pasta. Abra INICIAR_TOKYO.cmd e informe a chave do novo pacote, se pedida.
+O desbloqueio preserva private e guarda as fontes anteriores em
+private\atualizacoes. A base SQLite nao e substituida pelos snapshots.
+Tokyo-Teste e Tokyo-Trabalho usam bases distintas; nao altere as duas em
+paralelo. Para trazer uma base anterior, use a importacao abaixo.
+
+IMPORTAR O BANCO MAIS RECENTE DO TOKYO ORIGINAL (OPCIONAL)
+Pare de lancar na instalacao original e feche o Tokyo desta pasta com Ctrl+C.
+Abra IMPORTAR_DADOS_REAIS.cmd. Escolha o banco ATUAL do Tokyo original ou um
+backup SQLite recente (nao ZIP nem planilha). Confira caminho e contagens e
+digite IMPORTAR quando solicitado. A origem e somente lida e permanece
+preservada. A base atual desta pasta vai para private\backups antes da troca.
+A importacao substitui a base inteira; nao mescla bases. Depois, abra
+INICIAR_TOKYO.cmd e use o usuario e a senha da base original importada.
+Confira as baixas e entradas mais recentes e passe a trabalhar nesta versao
+para evitar duas bases divergentes. A operacao nao faz upload.
+
+Se nao encontrar o banco, pressione Win+R e abra
+%USERPROFILE%\Applications\Tokyo
+Abra settings.json no Bloco de Notas e consulte db_path. Escolha esse SQLite
+atual no seletor. Nao envie o banco nem o conteudo de settings.json ao GitHub.
+
+PRIVACIDADE E BACKUP
+O download guarda o aplicativo, os dados e todos os anexos cifrados com
+AES-256-GCM. A chave nao esta no ZIP nem no repositorio. Depois de abrir, as
+pastas app, referencias e private contem dados locais legiveis: proteja o
+computador e mantenha backups. Nao publique nem envie essas pastas ao GitHub.
+Para levar seu trabalho para outro computador, feche o Tokyo e copie a pasta
+inteira, incluindo private. O endereco acima funciona somente no computador
+em que o aplicativo esta aberto; este pacote nao e uma hospedagem na internet.
