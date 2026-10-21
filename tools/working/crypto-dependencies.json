@@ -1,0 +1,24 @@
+{
+  "python": "CPython 3.13 Windows amd64",
+  "source": "https://pypi.org/",
+  "wheels": [
+    {
+      "filename": "cryptography-50.0.2-cp311-abi3-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/9a/4f/adfc442765721292fff86d314ce385d3249d22db42295c0dd057727b60f3/cryptography-50.0.2-cp311-abi3-win_amd64.whl",
+      "size": 3824692,
+      "sha256": "7afa5a6602a9f29af1f3a2965f831bae7c9d5d597b7cbb716d41ab3b7d89879c"
+    },
+    {
+      "filename": "cffi-2.1.1-cp313-cp313-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/60/a6/8b149b2c3f2e11aaa1618ef64500b45f50f22c57a977a4dff1aff1f91042/cffi-2.1.1-cp313-cp313-win_amd64.whl",
+      "size": 185688,
+      "sha256": "1aa5645c30469b09530c4ebca77ebf8f17618293c58f8549cb1a543a50236e7d"
+    },
+    {
+      "filename": "pycparser-3.11-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/90/11/0e6f11117525ff0eec40ebac3d313376f102df93ca44ad9e893ee85e4f89/pycparser-3.11-py3-none-any.whl",
+      "size": 51178,
+      "sha256": "51d5a8ba2be0bbe440b99d2112604c95bbbc3c2748a64260186c541e1729cd80"
+    }
+  ]
+}

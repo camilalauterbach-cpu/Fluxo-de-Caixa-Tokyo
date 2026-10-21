@@ -137,7 +137,7 @@ class Handler(BaseHTTPRequestHandler):
                     s.update(candidate);return assessment
                 assessment=self.store.mutate(data.get('id','base'),data.get('expectedVersion'),user,'negotiation-confirm',text(data.get('reason')),confirm)
                 return self.send(dict(ok=True,assessment=assessment))
-            self.role(user,*(['admin','editor'] if path=='/api/response' else ['admin']))
+            self.role(user,*(['admin','editor'] if path in ['/api/response','/api/creditor-contact'] else ['admin']))
             if path=='/api/scenarios':
                 new=self.store.clone(data.get('id','base'),text(data.get('name')),user);return self.send(dict(id=new))
             if path=='/api/users':self.role(user,'admin');self.store.add_user(data);return self.send(dict(ok=True))
@@ -157,6 +157,16 @@ class Handler(BaseHTTPRequestHandler):
                     if status=='accepted':
                         candidate,_=approve(s,cid,{},evidence,reason,data.get('acknowledgeRisk',False));s.update(candidate)
                     else:s['proposals'][cid].update(status=status,evidence=evidence)
+                elif path=='/api/creditor-contact':
+                    cid=data['creditorId'];c=creditor(s,cid)
+                    if user['role']=='editor' and s.get('assignments',{}).get(cid,{}).get('user_id')!=user['id']:raise Forbidden('Este fornecedor não está atribuído a você.')
+                    contacts={}
+                    for key,maximum,label in [('trade_name',150,'Nome fantasia'),('negotiation_contact',150,'Contato da negociação'),('negotiation_phone',50,'Telefone')]:
+                        if key not in data:continue
+                        value=data[key]
+                        if not isinstance(value,str) or len(value)>maximum:raise DomainError(f'{label} deve ser um texto de até {maximum} caracteres.')
+                        contacts[key]=value
+                    c.update(contacts)
                 elif path=='/api/constraint':
                     self.role(user,'admin');cid=data['creditorId'];n=data['max_payments'];evidence=text(data.get('evidence'))
                     if not isinstance(n,int) or isinstance(n,bool) or n<1 or n>36 or len(evidence)<5:raise DomainError('Informe o limite e a referência da nova negociação.')
@@ -223,12 +233,14 @@ class Handler(BaseHTTPRequestHandler):
                     calc=calculate(s);key=data['eventKey'];event=next((e for e in calc['events']+calc['undated'] if e['key']==key and e['status']!='actual'),None)
                     if not event:raise DomainError('Compromisso não encontrado ou já liquidado.')
                     amount=money(data['amount_cents']);d=day(data['date']);evidence=text(data.get('evidence'))
+                    bank=data.get('bank')
+                    if bank not in (None,'','Itaú','Cora'):raise DomainError('Escolha Itaú ou Cora para o banco do comprovante.')
                     if d>datetime.now(timezone(timedelta(hours=-3))).date().isoformat():raise DomainError('Um movimento realizado não pode ter data futura. Use planejamento para datas futuras.')
                     if amount<=0 or amount>event['amount_cents'] or d<s['start'] or len(evidence)<5:raise DomainError('Confira valor, data posterior ao corte e referência do comprovante.')
                     if event.get('creditor_id') and s['proposals'][event['creditor_id']]['status']!='accepted':raise DomainError('Registre o aceite antes de liquidar uma parcela do plano.')
                     confirmed=data.get('composition_confirmed') is True
                     composition=paid_components(event,amount) if confirmed else {}
-                    s['payments'].append(dict(components_known=confirmed,**{k:v for k,v in composition.items() if k!='amount_cents'},id=uid(),event_key=key,creditor_id=event.get('creditor_id'),party=event['party'],direction=event['direction'],source_title_ids=[t['id'] for t in s['titles'] if t.get('proposed_agreement_id')==event.get('creditor_id') and event.get('creditor_id')],amount_cents=amount,date=d,evidence=evidence,actor=user['name']))
+                    s['payments'].append(dict(**({'bank':bank} if bank else {}),components_known=confirmed,**{k:v for k,v in composition.items() if k!='amount_cents'},id=uid(),event_key=key,creditor_id=event.get('creditor_id'),party=event['party'],direction=event['direction'],source_title_ids=[t['id'] for t in s['titles'] if t.get('proposed_agreement_id')==event.get('creditor_id') and event.get('creditor_id')],amount_cents=amount,date=d,evidence=evidence,actor=user['name']))
                 else:raise DomainError('Ação não encontrada.')
                 calculate(s)
             self.store.mutate(sid,expected,user,action,reason,update);return self.send(dict(ok=True))

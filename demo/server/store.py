@@ -130,7 +130,7 @@ class Store:
                     parts=key.split(':');proposal=state['proposals'].get(parts[1]) if len(parts)==3 else None
                     matching=bool(proposal and parts[2].isdigit() and 1<=int(parts[2])<=proposal['n'])
                 if matching and scenario_id!=sid:references.append(dict(id=scenario_id,name=name,version=version))
-            result.append(dict(**review,movement={k:pay.get(k) for k in ['id','party','date','amount_cents','direction','evidence']},description=description,reference_scenarios=references))
+            result.append(dict(**review,movement={k:pay.get(k) for k in ['id','party','date','amount_cents','direction','evidence','bank']},description=description,reference_scenarios=references))
         return result
 
     def latest_change(self,sid):

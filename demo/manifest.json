@@ -5,6 +5,16 @@
     "sha256": "a85c5f15956314b432ec337e454a86ec9e5b5ba856e10f7ab53db8c6d3a503e1"
   },
   {
+    "path": "PACOTE.json",
+    "bytes": 321,
+    "sha256": "69a8f9ab3db5ce522ba1da67a3051e083f72a8563aaf0359d5e159d0a5735cf6"
+  },
+  {
+    "path": "README.md",
+    "bytes": 2248,
+    "sha256": "55664428277e98f28126c6234ec9a40d960bb3c4edb514a58ad7ece7726758ec"
+  },
+  {
     "path": "data/credores_snapshot_com_restricoes.json",
     "bytes": 947,
     "sha256": "c96cb6abf682f6cc4eb1f97bd355a5c7f0e6424f3f944953992261a770b6d88b"
@@ -20,29 +30,24 @@
     "sha256": "9ead631097631550b06e242c706fe0a3f1c852892b27c9cf66406f3bae890c84"
   },
   {
-    "path": "dist/assets/index-Ce6Tm--M.js",
-    "bytes": 364746,
-    "sha256": "e1a080eb813284522b61535ca6ff7fa127268008502ef194b13b96248beb7718"
-  },
-  {
     "path": "dist/assets/index-DuCYP0XY.css",
     "bytes": 45844,
     "sha256": "01808842e86515f1874589845c8d8952faca2d167262a512de733074aa5c2c2d"
   },
   {
+    "path": "dist/assets/index-IJQMaIbd.js",
+    "bytes": 370945,
+    "sha256": "8c274e1797bc384c7c6e091675ee4602bb7de07d6938bf2f001e4775853f409b"
+  },
+  {
     "path": "dist/index.html",
     "bytes": 450,
-    "sha256": "ab0386d4b2c3d05189f32156f3df8e84b4ffa66dc4572f6dd3d37f6d9f89121f"
+    "sha256": "287e43df461825e760c3bbec274d54aa065e5be9527b5b3feafaf98478b2f16a"
   },
   {
     "path": "package.json",
     "bytes": 344,
     "sha256": "2f2269a8a0d96a599f7065dc1fa66b31fcece2e30f34fee0be9e96765714af5f"
-  },
-  {
-    "path": "PACOTE.json",
-    "bytes": 321,
-    "sha256": "69a8f9ab3db5ce522ba1da67a3051e083f72a8563aaf0359d5e159d0a5735cf6"
   },
   {
     "path": "pnpm-lock.yaml",
@@ -55,19 +60,14 @@
     "sha256": "ac02d96368617c760f093cfe61fdec64b6244007ab3553e0d6621f706f54a353"
   },
   {
-    "path": "README.md",
-    "bytes": 2248,
-    "sha256": "55664428277e98f28126c6234ec9a40d960bb3c4edb514a58ad7ece7726758ec"
-  },
-  {
     "path": "server/adjustments.py",
     "bytes": 3204,
     "sha256": "08c57f49c3421aecdb99f11cec078eeb3df151aa0e0b7e4e64668378cf88ef8c"
   },
   {
     "path": "server/app.py",
-    "bytes": 26057,
-    "sha256": "e3fe79c86bdf9d60371b9ca32eb1c709865eefc59748f2bfcbe8ffcd071cb3ee"
+    "bytes": 27130,
+    "sha256": "fda258e95a336536eeeca93f2cef5a4a9393bf23eca24fee85f16f886e09b2bc"
   },
   {
     "path": "server/costs.py",
@@ -91,8 +91,8 @@
   },
   {
     "path": "server/store.py",
-    "bytes": 16540,
-    "sha256": "76f5b749b5ccc742bbee110272035b2fca5825f398b56acc1772b4ef99de1960"
+    "bytes": 16547,
+    "sha256": "ee1cf0e24df4cd72d4fa7735ba30cc397a22a71c9808e6c8b3d2ca28d88af9a5"
   },
   {
     "path": "server/workflow.py",
@@ -100,29 +100,34 @@
     "sha256": "e85330498077034d7ba83c30ca31c729671f83c9153ee49330713bd4dacfcc28"
   },
   {
+    "path": "tests/supplier_contacts.test.mjs",
+    "bytes": 2820,
+    "sha256": "573b218f8dbbc0f94b3d5692af5c798b4439d8a1406a62a416a0dbac36792c4b"
+  },
+  {
+    "path": "tests/test_creditor_contacts.py",
+    "bytes": 11236,
+    "sha256": "296e623e95486e78b61e7b569a97cfb65ed1c39e535eea38b848a837a0a675f6"
+  },
+  {
+    "path": "tests/test_receipt_banks.py",
+    "bytes": 8109,
+    "sha256": "145f5ea3f4bd6ae134c8a79e1f6a30a9ae9176b1921b13318d12e0b062db14e0"
+  },
+  {
     "path": "vite.config.js",
     "bytes": 166,
     "sha256": "d694475743cb37e1dae118d326f392cd06c1f6ca863c89930ee8d0b291058ef8"
   },
   {
-    "path": "web/api.js",
-    "bytes": 2433,
-    "sha256": "fc187dfa8a444003633763281801aea32cde1e6fa4c284761e000cf175722a33"
-  },
-  {
     "path": "web/App.jsx",
-    "bytes": 17539,
-    "sha256": "6d203ee83e584d1557b010f31fc48b0ffd3392b56bc4bdd87cfff9415b4e3051"
+    "bytes": 17581,
+    "sha256": "2e0d0907638f28e7abe0b3c8400319a94bba77e34b73ac3ad04ff883106610b1"
   },
   {
     "path": "web/Calendar.jsx",
-    "bytes": 14427,
-    "sha256": "efdcfd5551a2507bbb1d30a6a7c0df028bfe0cb1d7951dfb0ceba4b6b1ea980f"
-  },
-  {
-    "path": "web/calendarModel.js",
-    "bytes": 1615,
-    "sha256": "891c7fbf693100edb74239d0ed45e40b0e09426cea2d20404a0575aef26b184e"
+    "bytes": 14470,
+    "sha256": "f4a45e176a94b55f08e99299c62bc1e1b2e1debb669a5af63267b25f4103c1b1"
   },
   {
     "path": "web/Corrections.jsx",
@@ -130,9 +135,44 @@
     "sha256": "767a2b5e6051339c8186d15c0af0e2ebfdcb0ce687633cde73cfe892fb062369"
   },
   {
+    "path": "web/Negotiation.jsx",
+    "bytes": 18588,
+    "sha256": "c92cb181a571b3a5b3d8466a4c2397d5eb875ca7b0a8fee69bf3617a15d4036a"
+  },
+  {
+    "path": "web/NowOverview.jsx",
+    "bytes": 13454,
+    "sha256": "69f46fae2dfd016ef490a9f6fc7d1c453337b7973aab2bed61372e2a1f06601c"
+  },
+  {
+    "path": "web/PaymentReviews.jsx",
+    "bytes": 3433,
+    "sha256": "1a971a172735e24492bbb75a284b4032ca10d4c24c051705b09f5324eb5c0d36"
+  },
+  {
+    "path": "web/Planning.jsx",
+    "bytes": 21724,
+    "sha256": "42be04e1f32c6886237e974363088f1c65e11a2a40bdf0b97ddf733edd1e2bcb"
+  },
+  {
+    "path": "web/Workflow.jsx",
+    "bytes": 9913,
+    "sha256": "0517c93a40849be3f6953abc52cc046f7ea7bf1be4edc4d650bed98da5d6c21d"
+  },
+  {
+    "path": "web/api.js",
+    "bytes": 2433,
+    "sha256": "fc187dfa8a444003633763281801aea32cde1e6fa4c284761e000cf175722a33"
+  },
+  {
+    "path": "web/calendarModel.js",
+    "bytes": 1615,
+    "sha256": "891c7fbf693100edb74239d0ed45e40b0e09426cea2d20404a0575aef26b184e"
+  },
+  {
     "path": "web/forms.jsx",
-    "bytes": 11044,
-    "sha256": "87a27033ff9ac769fd92f420770e02df793a7d7b2eb926593a9d4596d00f39c5"
+    "bytes": 11846,
+    "sha256": "3169e4815d5601527b4014764b4559d71b71ccf7a80925e524ec11bcb0c31820"
   },
   {
     "path": "web/index.html",
@@ -145,34 +185,19 @@
     "sha256": "cd3a4b1a671bb03ce41500bfa60524719006d2b62725d4bee0cd47ef12fc0d3a"
   },
   {
-    "path": "web/Negotiation.jsx",
-    "bytes": 16596,
-    "sha256": "0500e335aa99f1c15ce29f710e5d3fa8456c16f0cb60d3c8a38b4ad95daebcf4"
-  },
-  {
-    "path": "web/NowOverview.jsx",
-    "bytes": 13408,
-    "sha256": "e0f8456b48d9ffdb1362b8c5ff0d8aec4a56cbb433047fbbb1d74dd7cd8b3d7e"
-  },
-  {
     "path": "web/pages.jsx",
-    "bytes": 20869,
-    "sha256": "73d13534cbf7da9352e8e5977184a839df00e46f1e787646443e50250853856f"
-  },
-  {
-    "path": "web/PaymentReviews.jsx",
-    "bytes": 3373,
-    "sha256": "738a0400662994be5bed4a650250d2ccaea1f463377004e2534fac890d8e297d"
-  },
-  {
-    "path": "web/Planning.jsx",
-    "bytes": 21724,
-    "sha256": "42be04e1f32c6886237e974363088f1c65e11a2a40bdf0b97ddf733edd1e2bcb"
+    "bytes": 22047,
+    "sha256": "d4aab33303650d50b1ba8d8271e05582aec52464febcc7d26012fb7a724eaeaa"
   },
   {
     "path": "web/styles.css",
     "bytes": 46262,
     "sha256": "4a6e31aeb6bb383e6b2751f819ac8d58061e34f505ded7f0b241f4ce0b5e3656"
+  },
+  {
+    "path": "web/supplierContacts.js",
+    "bytes": 3593,
+    "sha256": "b1e1202b34b94e12db797736222028f35fcebbaa1e0e3130b24f6a42d2638b13"
   },
   {
     "path": "web/sync.js",
@@ -183,10 +208,5 @@
     "path": "web/ui.jsx",
     "bytes": 5369,
     "sha256": "263707cddab0d916bb644f477c86b13f57ebfe45fe9304a51ef844acadafa765"
-  },
-  {
-    "path": "web/Workflow.jsx",
-    "bytes": 9913,
-    "sha256": "0517c93a40849be3f6953abc52cc046f7ea7bf1be4edc4d650bed98da5d6c21d"
   }
 ]

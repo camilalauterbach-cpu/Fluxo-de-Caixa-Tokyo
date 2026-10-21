@@ -1,0 +1,15 @@
+{
+  "name": "Python",
+  "version": "3.13.16",
+  "architecture": "Windows x64",
+  "publisher": "Python Software Foundation",
+  "download": "https://api.nuget.org/v3-flatcontainer/python/3.13.16/python.3.13.16.nupkg",
+  "metadata": "https://api.nuget.org/v3/catalog0/data/2026.09.30.20.50.40/python.3.13.16.json",
+  "published": "2026-09-30T20:41:27.167Z",
+  "package_size": 14817881,
+  "package_hash_algorithm": "SHA512",
+  "package_hash_base64": "TGEhuRTpWtRifDR4r/GEhmg/cGMqtwB4kOCkt1QhXnCmdDE3Dict3iLJI1xrsNSRbXGyCwLEhe6qa5Rd2s376w==",
+  "verification": "Exact SHA-512 and byte count matched authoritative HTTPS catalog; TLS verification enabled.",
+  "license": "python/LICENSE.txt",
+  "windows_native_execution_tested": false
+}
