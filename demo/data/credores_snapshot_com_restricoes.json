@@ -1,0 +1,28 @@
+[
+  {
+    "id": "DEMO-01",
+    "name": "Fornecedor Alfa — demonstração",
+    "debt_cents": 2000000,
+    "current_max_payments": 2,
+    "historical_total_payments": 2,
+    "historical_down_payment_cents": 100000,
+    "historical_down_payment_date": "2026-10-23",
+    "historical_first_balance_date": "2026-11-20",
+    "constraint_source": "Condição fictícia para demonstração",
+    "source_rows": "DEMO",
+    "original_source": "Dados sintéticos"
+  },
+  {
+    "id": "DEMO-02",
+    "name": "Fornecedor Beta — demonstração",
+    "debt_cents": 900000,
+    "current_max_payments": 3,
+    "historical_total_payments": 3,
+    "historical_down_payment_cents": 90000,
+    "historical_down_payment_date": "2026-10-23",
+    "historical_first_balance_date": "2026-11-20",
+    "constraint_source": "Condição fictícia para demonstração",
+    "source_rows": "DEMO",
+    "original_source": "Dados sintéticos"
+  }
+]

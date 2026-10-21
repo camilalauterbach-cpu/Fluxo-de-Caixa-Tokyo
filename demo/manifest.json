@@ -1,0 +1,192 @@
+[
+  {
+    "path": ".gitignore",
+    "bytes": 77,
+    "sha256": "a85c5f15956314b432ec337e454a86ec9e5b5ba856e10f7ab53db8c6d3a503e1"
+  },
+  {
+    "path": "data/credores_snapshot_com_restricoes.json",
+    "bytes": 947,
+    "sha256": "c96cb6abf682f6cc4eb1f97bd355a5c7f0e6424f3f944953992261a770b6d88b"
+  },
+  {
+    "path": "data/pendencias_snapshot.json",
+    "bytes": 4,
+    "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+  },
+  {
+    "path": "data/titulos_snapshot.json",
+    "bytes": 3352,
+    "sha256": "9ead631097631550b06e242c706fe0a3f1c852892b27c9cf66406f3bae890c84"
+  },
+  {
+    "path": "dist/assets/index-Ce6Tm--M.js",
+    "bytes": 364746,
+    "sha256": "e1a080eb813284522b61535ca6ff7fa127268008502ef194b13b96248beb7718"
+  },
+  {
+    "path": "dist/assets/index-DuCYP0XY.css",
+    "bytes": 45844,
+    "sha256": "01808842e86515f1874589845c8d8952faca2d167262a512de733074aa5c2c2d"
+  },
+  {
+    "path": "dist/index.html",
+    "bytes": 450,
+    "sha256": "ab0386d4b2c3d05189f32156f3df8e84b4ffa66dc4572f6dd3d37f6d9f89121f"
+  },
+  {
+    "path": "package.json",
+    "bytes": 344,
+    "sha256": "2f2269a8a0d96a599f7065dc1fa66b31fcece2e30f34fee0be9e96765714af5f"
+  },
+  {
+    "path": "PACOTE.json",
+    "bytes": 321,
+    "sha256": "69a8f9ab3db5ce522ba1da67a3051e083f72a8563aaf0359d5e159d0a5735cf6"
+  },
+  {
+    "path": "pnpm-lock.yaml",
+    "bytes": 21859,
+    "sha256": "b96ba1a871de5ebbeddf227cb28113fa6fb00af939e5aa340728de702d24a750"
+  },
+  {
+    "path": "pnpm-workspace.yaml",
+    "bytes": 29,
+    "sha256": "ac02d96368617c760f093cfe61fdec64b6244007ab3553e0d6621f706f54a353"
+  },
+  {
+    "path": "README.md",
+    "bytes": 2248,
+    "sha256": "55664428277e98f28126c6234ec9a40d960bb3c4edb514a58ad7ece7726758ec"
+  },
+  {
+    "path": "server/adjustments.py",
+    "bytes": 3204,
+    "sha256": "08c57f49c3421aecdb99f11cec078eeb3df151aa0e0b7e4e64668378cf88ef8c"
+  },
+  {
+    "path": "server/app.py",
+    "bytes": 26057,
+    "sha256": "e3fe79c86bdf9d60371b9ca32eb1c709865eefc59748f2bfcbe8ffcd071cb3ee"
+  },
+  {
+    "path": "server/costs.py",
+    "bytes": 7959,
+    "sha256": "d0194fc87cc87da070c52c934705a94035ed5a39e053629080b19113e09293bc"
+  },
+  {
+    "path": "server/engine.py",
+    "bytes": 20647,
+    "sha256": "f4e326e22e2232151842d1b5f5ea039b6e99144f34def30cf7894a77f4b795b1"
+  },
+  {
+    "path": "server/identity.py",
+    "bytes": 626,
+    "sha256": "62b79affb84a2b60c419d7022d5f4f2901d7d710f192812aa5f734c54844a665"
+  },
+  {
+    "path": "server/planning.py",
+    "bytes": 12082,
+    "sha256": "4a4f3b7c61c9c505f6a7c907014b9a6ac1d7a1aa6e01acea0ce8996b7362fe51"
+  },
+  {
+    "path": "server/store.py",
+    "bytes": 16540,
+    "sha256": "76f5b749b5ccc742bbee110272035b2fca5825f398b56acc1772b4ef99de1960"
+  },
+  {
+    "path": "server/workflow.py",
+    "bytes": 6218,
+    "sha256": "e85330498077034d7ba83c30ca31c729671f83c9153ee49330713bd4dacfcc28"
+  },
+  {
+    "path": "vite.config.js",
+    "bytes": 166,
+    "sha256": "d694475743cb37e1dae118d326f392cd06c1f6ca863c89930ee8d0b291058ef8"
+  },
+  {
+    "path": "web/api.js",
+    "bytes": 2433,
+    "sha256": "fc187dfa8a444003633763281801aea32cde1e6fa4c284761e000cf175722a33"
+  },
+  {
+    "path": "web/App.jsx",
+    "bytes": 17539,
+    "sha256": "6d203ee83e584d1557b010f31fc48b0ffd3392b56bc4bdd87cfff9415b4e3051"
+  },
+  {
+    "path": "web/Calendar.jsx",
+    "bytes": 14427,
+    "sha256": "efdcfd5551a2507bbb1d30a6a7c0df028bfe0cb1d7951dfb0ceba4b6b1ea980f"
+  },
+  {
+    "path": "web/calendarModel.js",
+    "bytes": 1615,
+    "sha256": "891c7fbf693100edb74239d0ed45e40b0e09426cea2d20404a0575aef26b184e"
+  },
+  {
+    "path": "web/Corrections.jsx",
+    "bytes": 4112,
+    "sha256": "767a2b5e6051339c8186d15c0af0e2ebfdcb0ce687633cde73cfe892fb062369"
+  },
+  {
+    "path": "web/forms.jsx",
+    "bytes": 11044,
+    "sha256": "87a27033ff9ac769fd92f420770e02df793a7d7b2eb926593a9d4596d00f39c5"
+  },
+  {
+    "path": "web/index.html",
+    "bytes": 347,
+    "sha256": "598fb47a2798eb892ac0bcbdecace7d009133aa3f5e0f4f5d9d269a8929d51ca"
+  },
+  {
+    "path": "web/main.jsx",
+    "bytes": 172,
+    "sha256": "cd3a4b1a671bb03ce41500bfa60524719006d2b62725d4bee0cd47ef12fc0d3a"
+  },
+  {
+    "path": "web/Negotiation.jsx",
+    "bytes": 16596,
+    "sha256": "0500e335aa99f1c15ce29f710e5d3fa8456c16f0cb60d3c8a38b4ad95daebcf4"
+  },
+  {
+    "path": "web/NowOverview.jsx",
+    "bytes": 13408,
+    "sha256": "e0f8456b48d9ffdb1362b8c5ff0d8aec4a56cbb433047fbbb1d74dd7cd8b3d7e"
+  },
+  {
+    "path": "web/pages.jsx",
+    "bytes": 20869,
+    "sha256": "73d13534cbf7da9352e8e5977184a839df00e46f1e787646443e50250853856f"
+  },
+  {
+    "path": "web/PaymentReviews.jsx",
+    "bytes": 3373,
+    "sha256": "738a0400662994be5bed4a650250d2ccaea1f463377004e2534fac890d8e297d"
+  },
+  {
+    "path": "web/Planning.jsx",
+    "bytes": 21724,
+    "sha256": "42be04e1f32c6886237e974363088f1c65e11a2a40bdf0b97ddf733edd1e2bcb"
+  },
+  {
+    "path": "web/styles.css",
+    "bytes": 46262,
+    "sha256": "4a6e31aeb6bb383e6b2751f819ac8d58061e34f505ded7f0b241f4ce0b5e3656"
+  },
+  {
+    "path": "web/sync.js",
+    "bytes": 419,
+    "sha256": "53644b0c98e7ece90e6d7f48c32ee6b348a85b288f6bc18dfe6491629f1f3ae9"
+  },
+  {
+    "path": "web/ui.jsx",
+    "bytes": 5369,
+    "sha256": "263707cddab0d916bb644f477c86b13f57ebfe45fe9304a51ef844acadafa765"
+  },
+  {
+    "path": "web/Workflow.jsx",
+    "bytes": 9913,
+    "sha256": "0517c93a40849be3f6953abc52cc046f7ea7bf1be4edc4d650bed98da5d6c21d"
+  }
+]
